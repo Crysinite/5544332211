@@ -1,75 +1,43 @@
 {
   "date": "Sunday, August 21st",
   "times": {
-    "Afternoon": {
+    "Morning": {
       "layout": [
         {
           "nodes": [
             {
-              "id": "start",
-              "title": "An Unexpected Task",
-              "content": [
-                "SCENE: Alex's Bedroom.",
-                "Mr. Harrison calls, asking Alex to pick up three important documents before school tomorrow for extra credit."
-              ]
+              "id": "m1_wakeup",
+              "title": "Wake Up",
+              "content": ["The sun streams through the window. It's the last week of summer break."]
             }
           ]
         },
         {
           "nodes": [
             {
-              "id": "choice_point",
-              "title": "Where to go first? (Player Choice)",
-              "content": [
-                "Alex agrees. The player is presented with three locations and can choose the order to visit them."
-              ]
-            }
-          ]
-        },
-        {
-          "nodes": [
-            {
-              "id": "cafe1",
-              "title": "Event: The Quiet Mug Cafe",
-              "content": [
-                "SCENE: The Quiet Mug Cafe.",
-                "The barista, Chloe, gives Alex a folder labeled 'Poetry Analysis'.",
-                "ITEM GET: Poetry Analysis"
-              ]
-            },
-            {
-              "id": "library1",
-              "title": "Event: Old Town Library",
-              "content": [
-                "SCENE: Old Town Library.",
-                "Alex finds a folder labeled 'Historical Timelines' in a study carrel.",
-                "ITEM GET: Historical Timelines"
-              ]
-            },
-            {
-              "id": "park1",
-              "title": "Event: Sunbeam Park",
-              "content": [
-                "SCENE: Sunbeam Park, by the fountain.",
-                "Alex finds a waterproof bag with a USB drive under a bench.",
-                "ITEM GET: Research USB"
-              ]
-            }
-          ]
-        },
-        {
-          "nodes": [
-            {
-              "id": "school1",
-              "title": "Resolution: Go to School",
-              "content": [
-                "SCENE: Westwood High, Classroom.",
-                "This scene triggers after the player has all three items.",
-                "Alex leaves the items on the teacher's desk."
-              ]
+              "id": "m2_phone",
+              "title": "Check Phone",
+              "content": ["A text from Leo: 'Beach day today, last chance before school starts!'"]
             }
           ]
         }
+      ],
+      "connections": [
+        { "from": "m1_wakeup", "to": "m2_phone" }
+      ]
+    },
+    "Afternoon": {
+      "layout": [
+        { "nodes": [ { "id": "start", "title": "An Unexpected Task", "content": ["SCENE: Alex's Bedroom.", "Mr. Harrison calls, asking Alex to pick up three important documents before school tomorrow for extra credit."] } ] },
+        { "nodes": [ { "id": "choice_point", "title": "Where to go first? (Player Choice)", "content": ["Alex agrees. The player is presented with three locations and can choose the order to visit them."] } ] },
+        {
+          "nodes": [
+            { "id": "cafe1", "title": "Event: The Quiet Mug Cafe", "content": ["SCENE: The Quiet Mug Cafe.", "The barista, Chloe, gives Alex a folder labeled 'Poetry Analysis'.", "ITEM GET: Poetry Analysis"] },
+            { "id": "library1", "title": "Event: Old Town Library", "content": ["SCENE: Old Town Library.", "Alex finds a folder labeled 'Historical Timelines' in a study carrel.", "ITEM GET: Historical Timelines"] },
+            { "id": "park1", "title": "Event: Sunbeam Park", "content": ["SCENE: Sunbeam Park, by the fountain.", "Alex finds a waterproof bag with a USB drive under a bench.", "ITEM GET: Research USB"] }
+          ]
+        },
+        { "nodes": [ { "id": "school1", "title": "Resolution: Go to School", "content": ["SCENE: Westwood High, Classroom.", "This scene triggers after the player has all three items.", "Alex leaves the items on the teacher's desk."] } ] }
       ],
       "connections": [
         { "from": "start", "to": "choice_point" },
@@ -79,6 +47,17 @@
         { "from": "cafe1", "to": "school1" },
         { "from": "library1", "to": "school1" },
         { "from": "park1", "to": "school1" }
+      ]
+    },
+    "Night": {
+      "layout": [
+        { "nodes": [ { "id": "n1_home", "title": "Return Home", "content": ["Exhausted, you get home just as the sun sets completely."] } ] },
+        { "nodes": [ { "id": "n2_reflect", "title": "Reflection", "content": ["You think about the day's events and the start of school tomorrow. A mix of excitement and nervousness."] } ] },
+        { "nodes": [ { "id": "n3_sleep", "title": "Go to Sleep", "content": ["END OF DAY"] } ] }
+      ],
+      "connections": [
+        { "from": "n1_home", "to": "n2_reflect" },
+        { "from": "n2_reflect", "to": "n3_sleep" }
       ]
     }
   }

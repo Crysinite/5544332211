@@ -24,35 +24,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const svg = document.querySelector('.connector-svg');
     let animationFrameId = null;
 
-    function getOptimalConnectionPoints(fromEl, toEl) {
-        const fromRect = fromEl.getBoundingClientRect();
-        const toRect = toEl.getBoundingClientRect();
-        const wrapperRect = flowchartWrapper.getBoundingClientRect();
-
-        let start, end;
-
-        if (toRect.top > fromRect.bottom) { // Connecting downwards
-            start = { x: fromRect.left + fromRect.width / 2 - wrapperRect.left, y: fromRect.bottom - wrapperRect.top };
-            end = { x: toRect.left + toRect.width / 2 - wrapperRect.left, y: toRect.top - wrapperRect.top };
-        } else { // Connecting sideways
-            const fromY = fromRect.top + fromRect.height / 2 - wrapperRect.top;
-            const toY = toRect.top + toRect.height / 2 - wrapperRect.top;
-            if (toRect.left > fromRect.right) { // To the right
-                start = { x: fromRect.right - wrapperRect.left, y: fromY };
-                end = { x: toRect.left - wrapperRect.left, y: toY };
-            } else { // To the left
-                start = { x: fromRect.left - wrapperRect.left, y: fromY };
-                end = { x: toRect.right - wrapperRect.left, y: toY };
-            }
-        }
-        return { start, end };
-    }
-
     /**
-     * NEW: Rewritten to draw orthogonal lines with arrowheads.
+     * THE FIX IS HERE: Rewritten path calculation logic.
+     * This function now creates clean, orthogonal paths that avoid clipping.
      */
     function drawAllConnections(time) {
-        svg.innerHTML = ''; // Clear previous lines, but keep the <defs>
+        // Clear all previous lines but leave the <defs> for the arrowhead
+        const defs = svg.querySelector('defs');
+        svg.innerHTML = '';
+        if (defs) svg.appendChild(defs);
+
         const connections = storyData.times[time]?.connections || [];
 
         connections.forEach(conn => {
@@ -60,18 +41,41 @@ document.addEventListener('DOMContentLoaded', () => {
             const toNode = flowchartWrapper.querySelector(`.flowchart-node[data-node-id="${conn.to}"]`);
 
             if (fromNode && toNode) {
-                const { start, end } = getOptimalConnectionPoints(fromNode, toNode);
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                
-                // Calculate waypoints for the orthogonal line
-                const midY = start.y + (end.y - start.y) / 2;
-                
-                // Create the path string: M(ove) -> V(ertical lineto) -> H(orizontal lineto) -> V(ertical lineto)
-                // This creates the clean right-angle connections.
-                const pathData = `M ${start.x} ${start.y} V ${midY} H ${end.x} V ${end.y}`;
+                const fromRect = fromNode.getBoundingClientRect();
+                const toRect = toNode.getBoundingClientRect();
+                const wrapperRect = flowchartWrapper.getBoundingClientRect();
 
+                // Determine start and end points
+                const start = {
+                    x: fromRect.left + fromRect.width / 2 - wrapperRect.left,
+                    y: fromRect.bottom - wrapperRect.top
+                };
+                const end = {
+                    x: toRect.left + toRect.width / 2 - wrapperRect.left,
+                    y: toRect.top - wrapperRect.top
+                };
+
+                let pathData;
+
+                // Check if the connection is between different rows
+                if (toRect.top > fromRect.bottom) {
+                    // This is the key logic. It creates a "channel" for the line to travel in.
+                    const verticalGap = toRect.top - fromRect.bottom;
+                    const halfVerticalGap = verticalGap / 2;
+
+                    // The path goes:
+                    // 1. Move from the start point vertically down into the channel.
+                    // 2. Move horizontally to align with the end point's x-coordinate.
+                    // 3. Move vertically from the channel to the end point.
+                    pathData = `M ${start.x} ${start.y} V ${start.y + halfVerticalGap} H ${end.x} V ${end.y}`;
+                } else {
+                    // Fallback for any other type of connection (e.g., sideways)
+                    const midX = start.x + (end.x - start.x) / 2;
+                    pathData = `M ${start.x} ${start.y} H ${midX} V ${end.y} H ${end.x}`;
+                }
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 line.setAttribute('d', pathData);
-                // Apply the arrowhead marker to the end of the path
                 line.setAttribute('marker-end', 'url(#arrowhead)');
                 svg.appendChild(line);
             }
@@ -114,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const node = e.target.closest('.flowchart-node');
         if (node) {
             node.classList.toggle('is-open');
-            animateLines(400);
+            animateLines(400); // Duration must match the CSS transition
         }
     });
 

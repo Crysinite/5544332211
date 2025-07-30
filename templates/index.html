@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Story Acts</h1>
+        <p>Select an act to begin viewing the story.</p>
+    </div>
+    <div class="card-grid">
+        {% for num, title in acts.items() %}
+        <a href="{{ url_for('act_page', act_num=num) }}" class="card">
+            <h3>{{ title }}</h3>
+        </a>
+        {% endfor %}
+    </div>
+{% endblock %}

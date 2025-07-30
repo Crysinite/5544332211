@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="page-header">
+        <a href="/" class="breadcrumb">← Back to Acts</a>
+        <h1>{{ act_title }}</h1>
+        <p>Select a chapter.</p>
+    </div>
+    <div class="card-grid">
+        {% if chapters %}
+            {% for chapter_num in chapters %}
+            <a href="{{ url_for('chapter_page', act_num=act_num, chapter_num=chapter_num) }}" class="card">
+                <h3>Chapter {{ chapter_num }}</h3>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="card-placeholder">
+                <p>No chapters have been created for this act yet.</p>
+                <p class="small-text">To add a chapter, create a 'chapter_X' folder inside 'story_data/act_{{act_num}}'.</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

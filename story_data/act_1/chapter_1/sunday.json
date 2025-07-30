@@ -1,0 +1,55 @@
+{
+  "date": "Sunday, August 21st",
+  "times": {
+    "Morning": {
+      "nodes": [
+        {
+          "id": "m1",
+          "title": "Start of Morning",
+          "content": "The sun streams through the window, warm on your face. It's the last week of summer break, and the air is thick with a lazy, bittersweet feeling. Your phone buzzes on the nightstand."
+        },
+        {
+          "id": "m2",
+          "title": "Check Phone",
+          "content": "A text from your friend, Leo: 'Hey, you up? Beach day today, last chance before school starts. Be ready in an hour!' You groan but smile. A perfect way to start the end of summer."
+        }
+      ],
+      "connections": [
+        { "from": "m1", "to": "m2" }
+      ]
+    },
+    "Afternoon": {
+      "nodes": [
+        {
+          "id": "a1",
+          "title": "Arrive at the Beach",
+          "content": "The beach is packed. The sound of waves crashing and people laughing fills the air. You spot Leo waving you over to a spot near the old pier."
+        },
+        {
+          "id": "a2",
+          "title": "Alex Meets Jane Event",
+          "content": "As you're setting down your towel, a stray frisbee sails through the air and lands right at your feet. A girl with bright, curious eyes runs up. 'Oh my gosh, I'm so sorry!' she says, laughing. 'I'm Jane.' This is the first time you've met."
+        },
+        {
+          "id": "a3",
+          "title": "Playing Volleyball",
+          "content": "Jane invites you and Leo to join her friends for a game of volleyball. The afternoon passes in a blur of sun, sand, and friendly competition."
+        }
+      ],
+      "connections": [
+        { "from": "a1", "to": "a2" },
+        { "from": "a2", "to": "a3" }
+      ]
+    },
+    "Night": {
+      "nodes": [
+        {
+          "id": "n1",
+          "title": "Bonfire on the Beach",
+          "content": "As the sun sets, someone starts a bonfire. The group gathers around, sharing stories and roasting marshmallows. The stars begin to appear, scattered across the deep purple sky."
+        }
+      ],
+      "connections": []
+    }
+  }
+}

@@ -1,0 +1,219 @@
+/* --- Google Inspired UI & Theming --- */
+:root {
+    --font-sans: 'Roboto', sans-serif;
+    --radius: 0.8rem;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] {
+    --background: #f1f5f9;
+    --foreground: #020817;
+    --card: #ffffff;
+    --card-foreground: #020817;
+    --primary: #4f46e5;
+    --primary-foreground: #ffffff;
+    --border: #e2e8f0;
+    --muted-foreground: #64748b;
+}
+
+[data-theme="dark"] {
+    --background: #020817;
+    --foreground: #f8fafc;
+    --card: #0f172a;
+    --card-foreground: #f8fafc;
+    --primary: #6366f1;
+    --primary-foreground: #ffffff;
+    --border: #1e293b;
+    --muted-foreground: #94a3b8;
+}
+
+/* --- Base Styles --- */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    margin: 0;
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+a:hover { opacity: 0.8; }
+
+/* --- Header --- */
+.main-header {
+    background-color: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+}
+#theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+.theme-icon { width: 24px; height: 24px; }
+[data-theme="light"] #theme-icon-sun { display: none; }
+[data-theme="dark"] #theme-icon-moon { display: none; }
+
+/* --- Page Content --- */
+.page-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+.page-header p {
+    color: var(--muted-foreground);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.breadcrumb {
+    display: inline-block;
+    color: var(--muted-foreground);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+.subtitle {
+    font-size: 1rem !important;
+    font-weight: 500;
+}
+
+/* --- Card Grid --- */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+.card {
+    background-color: var(--card);
+    color: var(--card-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+.card-placeholder {
+    background-color: var(--card);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    color: var(--muted-foreground);
+    grid-column: 1 / -1;
+}
+.small-text { font-size: 0.8rem; opacity: 0.7; }
+
+/* --- Flowchart --- */
+.flowchart-controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+.tabs {
+    display: inline-flex;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.5rem;
+}
+.tab-button {
+    background-color: transparent;
+    color: var(--muted-foreground);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: calc(var(--radius) - 0.25rem);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.tab-button.active {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    box-shadow: var(--shadow-sm);
+}
+.flowchart-wrapper {
+    position: relative;
+    padding: 2rem;
+    min-height: 500px;
+}
+.connector-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows clicking through the SVG to the nodes */
+    stroke: var(--muted-foreground);
+    stroke-width: 2px;
+    fill: none;
+}
+.flowchart-container {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+}
+.flowchart-container.active {
+    display: flex;
+}
+.flowchart-node {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 350px;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    overflow: hidden;
+}
+.node-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+}
+.node-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+.node-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+    padding: 0 1.25rem;
+}
+.flowchart-node.is-open .node-content {
+    max-height: 500px; /* Large enough for content */
+    padding: 1.25rem;
+}

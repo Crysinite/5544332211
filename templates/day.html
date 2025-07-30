@@ -20,22 +20,26 @@
     
     {% for time, data in day_data.times.items() %}
     <div id="flowchart-{{ time }}" class="flowchart-container">
-        {% for node in data.nodes %}
-        <div class="flowchart-node" data-node-id="{{ node.id }}">
-            <div class="node-header">
-                <h4 class="node-title">{{ node.title }}</h4>
-            </div>
-            <div class="node-content">
-                <!-- NEW: Loop through the content array -->
-                {% for item in node.content %}
-                    {% if item.action %}
-                        <p class="action-text"><em>{{ item.action }}</em></p>
-                    {% elif item.character %}
-                        <p class="dialogue-text"><strong>{{ item.character }}:</strong> {{ item.dialogue }}</p>
-                    {% endif %}
+        <!-- NEW: Looping through layout rows -->
+        {% for row in data.layout %}
+            <div class="flowchart-row">
+                {% for node in row.nodes %}
+                <div class="flowchart-node" data-node-id="{{ node.id }}">
+                    <div class="node-header">
+                        <h4 class="node-title">{{ node.title }}</h4>
+                    </div>
+                    <div class="node-content">
+                        {% for item in node.content %}
+                            {% if item.action %}
+                                <p class="action-text"><em>{{ item.action }}</em></p>
+                            {% elif item.character %}
+                                <p class="dialogue-text"><strong>{{ item.character }}:</strong> {{ item.dialogue }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
                 {% endfor %}
             </div>
-        </div>
         {% endfor %}
     </div>
     {% endfor %}

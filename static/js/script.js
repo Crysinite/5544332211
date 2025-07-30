@@ -25,11 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let animationFrameId = null;
 
     /**
-     * THE FIX IS HERE: Rewritten path calculation logic.
-     * This function now creates clean, orthogonal paths that avoid clipping.
+     * THE DEFINITIVE FIX: Rewritten path calculation logic.
+     * This version creates clean, non-intersecting orthogonal paths by routing
+     * them through the "gutters" between node rows.
      */
     function drawAllConnections(time) {
-        // Clear all previous lines but leave the <defs> for the arrowhead
+        // Clear all previous lines but preserve the <defs> for the arrowhead
         const defs = svg.querySelector('defs');
         svg.innerHTML = '';
         if (defs) svg.appendChild(defs);
@@ -45,7 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const toRect = toNode.getBoundingClientRect();
                 const wrapperRect = flowchartWrapper.getBoundingClientRect();
 
-                // Determine start and end points
+                // Define a fixed offset to create a "safe channel" between rows
+                const channelOffset = 20; // 20px gutter
+
                 const start = {
                     x: fromRect.left + fromRect.width / 2 - wrapperRect.left,
                     y: fromRect.bottom - wrapperRect.top
@@ -55,24 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     y: toRect.top - wrapperRect.top
                 };
 
-                let pathData;
-
-                // Check if the connection is between different rows
-                if (toRect.top > fromRect.bottom) {
-                    // This is the key logic. It creates a "channel" for the line to travel in.
-                    const verticalGap = toRect.top - fromRect.bottom;
-                    const halfVerticalGap = verticalGap / 2;
-
-                    // The path goes:
-                    // 1. Move from the start point vertically down into the channel.
-                    // 2. Move horizontally to align with the end point's x-coordinate.
-                    // 3. Move vertically from the channel to the end point.
-                    pathData = `M ${start.x} ${start.y} V ${start.y + halfVerticalGap} H ${end.x} V ${end.y}`;
-                } else {
-                    // Fallback for any other type of connection (e.g., sideways)
-                    const midX = start.x + (end.x - start.x) / 2;
-                    pathData = `M ${start.x} ${start.y} H ${midX} V ${end.y} H ${end.x}`;
-                }
+                // This is the robust V-H-V (Vertical-Horizontal-Vertical) pathing logic.
+                // 1. Move down from the start node into the safe channel.
+                // 2. Move horizontally to align with the target node's column.
+                // 3. Move down vertically to connect to the target node.
+                const pathData = `M ${start.x} ${start.y} V ${start.y + channelOffset} H ${end.x} V ${end.y}`;
 
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 line.setAttribute('d', pathData);
@@ -91,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function animationStep(timestamp) {
             if (!startTime) startTime = timestamp;
             const progress = timestamp - startTime;
-            drawAllConnections(activeTime);
+            drawAllConnections(activeTime); // Redraw on every frame
             if (progress < duration) {
                 animationFrameId = requestAnimationFrame(animationStep);
             }
@@ -110,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 container.classList.toggle('active', container.id === `flowchart-${time}`);
             });
             
+            // Initial draw
             setTimeout(() => drawAllConnections(time), 50);
         });
     });
@@ -118,11 +109,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const node = e.target.closest('.flowchart-node');
         if (node) {
             node.classList.toggle('is-open');
+            // Start the smooth animation loop on click
             animateLines(400); // Duration must match the CSS transition
         }
     });
 
-    // Initial setup
+    // Initial setup for the first tab
     if (tabButtons.length > 0) {
         tabButtons[0].click();
     }

@@ -73,10 +73,9 @@ a:hover { opacity: 0.8; }
     border: none;
     cursor: pointer;
     padding: 0.5rem;
+    font-size: 1.5rem; /* For emoji */
+    line-height: 1;
 }
-.theme-icon { width: 24px; height: 24px; }
-[data-theme="light"] #theme-icon-sun { display: none; }
-[data-theme="dark"] #theme-icon-moon { display: none; }
 
 /* --- Page Content --- */
 .page-header {
@@ -179,12 +178,15 @@ a:hover { opacity: 0.8; }
     stroke: var(--muted-foreground);
     stroke-width: 2px;
     fill: none;
+    transition: opacity 0.3s;
 }
 .flowchart-container {
     display: none; /* Hidden by default */
-    flex-direction: column;
     align-items: center;
     gap: 4rem;
+    /* We use flexbox for branching now */
+    flex-wrap: wrap; 
+    justify-content: center;
 }
 .flowchart-container.active {
     display: flex;
@@ -197,6 +199,17 @@ a:hover { opacity: 0.8; }
     box-shadow: var(--shadow-md);
     cursor: pointer;
     overflow: hidden;
+    /* Added for state changes */
+    transition: opacity 0.3s, border-color 0.3s; 
+}
+/* NEW: Locked state styling */
+.flowchart-node.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--border);
+}
+.flowchart-node.locked .node-header {
+    text-decoration: line-through;
 }
 .node-header {
     padding: 1rem 1.25rem;
@@ -216,4 +229,11 @@ a:hover { opacity: 0.8; }
 .flowchart-node.is-open .node-content {
     max-height: 500px; /* Large enough for content */
     padding: 1.25rem;
+}
+/* This is for the branching layout */
+.flowchart-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
 }

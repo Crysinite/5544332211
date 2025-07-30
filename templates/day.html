@@ -16,11 +16,24 @@
 </div>
 
 <div class="flowchart-wrapper">
-    <svg class="connector-svg"></svg>
+    <svg class="connector-svg">
+        <!-- NEW: Definition for the arrowhead marker -->
+        <defs>
+            <marker
+                id="arrowhead"
+                viewBox="0 0 10 10"
+                refX="5"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead-path"></path>
+            </marker>
+        </defs>
+    </svg>
     
     {% for time, data in day_data.times.items() %}
     <div id="flowchart-{{ time }}" class="flowchart-container">
-        <!-- NEW: Looping through layout rows -->
         {% for row in data.layout %}
             <div class="flowchart-row">
                 {% for node in row.nodes %}
@@ -29,12 +42,9 @@
                         <h4 class="node-title">{{ node.title }}</h4>
                     </div>
                     <div class="node-content">
-                        {% for item in node.content %}
-                            {% if item.action %}
-                                <p class="action-text"><em>{{ item.action }}</em></p>
-                            {% elif item.character %}
-                                <p class="dialogue-text"><strong>{{ item.character }}:</strong> {{ item.dialogue }}</p>
-                            {% endif %}
+                        <!-- SIMPLIFIED: Loop for plain text -->
+                        {% for line in node.content %}
+                            <p>{{ line }}</p>
                         {% endfor %}
                     </div>
                 </div>

@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-header">
+    <a href="{{ url_for('chapter_page', act_num=act_num, chapter_num=chapter_num) }}" class="breadcrumb">← Back to Chapter {{ chapter_num }}</a>
+    <h1>{{ day_name }}</h1>
+    <p class="subtitle">{{ day_data.date }} • {{ act_title }}</p>
+</div>
+
+<div class="flowchart-controls">
+    <div class="tabs">
+        {% for time in day_data.times %}
+        <button class="tab-button" data-tab="{{ time }}">{{ time }}</button>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="flowchart-wrapper">
+    <svg class="connector-svg"></svg>
+    
+    {% for time, data in day_data.times.items() %}
+    <div id="flowchart-{{ time }}" class="flowchart-container">
+        {% for node in data.nodes %}
+        <div class="flowchart-node" data-node-id="{{ node.id }}">
+            <div class="node-header">
+                <h4 class="node-title">{{ node.title }}</h4>
+            </div>
+            <div class="node-content">
+                <p>{{ node.content }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pass story data from Flask (Python) to JavaScript
+    const storyData = {{ day_data | tojson }};
+</script>
+{% endblock %}

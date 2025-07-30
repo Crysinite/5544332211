@@ -16,53 +16,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Flowchart Logic (MAJOR OVERHAUL) ---
+    // --- Flowchart Logic ---
     const flowchartWrapper = document.querySelector('.flowchart-wrapper');
     if (!flowchartWrapper) return;
 
     const tabButtons = document.querySelectorAll('.tab-button');
     const svg = document.querySelector('.connector-svg');
-    let animationFrameId = null; // To control the animation loop
+    let animationFrameId = null;
 
-    /**
-     * NEW: Smart connection point calculation.
-     * This function determines the best place on each node to draw a line from/to,
-     * preventing lines from clipping through the middle of nodes.
-     */
     function getOptimalConnectionPoints(fromEl, toEl) {
         const fromRect = fromEl.getBoundingClientRect();
         const toRect = toEl.getBoundingClientRect();
         const wrapperRect = flowchartWrapper.getBoundingClientRect();
 
-        // Calculate center points
-        const fromCx = fromRect.left + fromRect.width / 2;
-        const toCy = toRect.top + toRect.height / 2;
-
         let start, end;
 
-        // If 'to' node is mostly to the right of 'from' node
-        if (toRect.left > fromRect.right) {
-            start = { x: fromRect.right - wrapperRect.left, y: fromRect.top + fromRect.height / 2 - wrapperRect.top };
-            end = { x: toRect.left - wrapperRect.left, y: toCy - wrapperRect.top };
-        } 
-        // If 'to' node is mostly to the left of 'from' node
-        else if (toRect.right < fromRect.left) {
-            start = { x: fromRect.left - wrapperRect.left, y: fromRect.top + fromRect.height / 2 - wrapperRect.top };
-            end = { x: toRect.right - wrapperRect.left, y: toCy - wrapperRect.top };
-        }
-        // Otherwise, connect top-to-bottom (the default)
-        else {
-            start = { x: fromCx - wrapperRect.left, y: fromRect.bottom - wrapperRect.top };
+        if (toRect.top > fromRect.bottom) { // Connecting downwards
+            start = { x: fromRect.left + fromRect.width / 2 - wrapperRect.left, y: fromRect.bottom - wrapperRect.top };
             end = { x: toRect.left + toRect.width / 2 - wrapperRect.left, y: toRect.top - wrapperRect.top };
+        } else { // Connecting sideways
+            const fromY = fromRect.top + fromRect.height / 2 - wrapperRect.top;
+            const toY = toRect.top + toRect.height / 2 - wrapperRect.top;
+            if (toRect.left > fromRect.right) { // To the right
+                start = { x: fromRect.right - wrapperRect.left, y: fromY };
+                end = { x: toRect.left - wrapperRect.left, y: toY };
+            } else { // To the left
+                start = { x: fromRect.left - wrapperRect.left, y: fromY };
+                end = { x: toRect.right - wrapperRect.left, y: toY };
+            }
         }
         return { start, end };
     }
 
     /**
-     * The main drawing function. It now uses the smart connection logic.
+     * NEW: Rewritten to draw orthogonal lines with arrowheads.
      */
     function drawAllConnections(time) {
-        svg.innerHTML = ''; // Clear previous lines
+        svg.innerHTML = ''; // Clear previous lines, but keep the <defs>
         const connections = storyData.times[time]?.connections || [];
 
         connections.forEach(conn => {
@@ -72,22 +62,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (fromNode && toNode) {
                 const { start, end } = getOptimalConnectionPoints(fromNode, toNode);
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                // A bezier curve for a nice, smooth line
-                const curve = `M ${start.x} ${start.y} C ${start.x} ${start.y + 50}, ${end.x} ${end.y - 50}, ${end.x} ${end.y}`;
-                line.setAttribute('d', curve);
+                
+                // Calculate waypoints for the orthogonal line
+                const midY = start.y + (end.y - start.y) / 2;
+                
+                // Create the path string: M(ove) -> V(ertical lineto) -> H(orizontal lineto) -> V(ertical lineto)
+                // This creates the clean right-angle connections.
+                const pathData = `M ${start.x} ${start.y} V ${midY} H ${end.x} V ${end.y}`;
+
+                line.setAttribute('d', pathData);
+                // Apply the arrowhead marker to the end of the path
+                line.setAttribute('marker-end', 'url(#arrowhead)');
                 svg.appendChild(line);
             }
         });
     }
 
-    /**
-     * NEW: Smooth animation loop using requestAnimationFrame.
-     * This runs every frame for 400ms, creating the fluid line animation.
-     */
     function animateLines(duration) {
-        if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId); // Cancel any ongoing animation
-        }
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
         
         let startTime = null;
         const activeTime = document.querySelector('.tab-button.active')?.dataset.tab;
@@ -95,19 +87,15 @@ document.addEventListener('DOMContentLoaded', () => {
         function animationStep(timestamp) {
             if (!startTime) startTime = timestamp;
             const progress = timestamp - startTime;
-
-            drawAllConnections(activeTime); // Redraw on every frame
-
+            drawAllConnections(activeTime);
             if (progress < duration) {
                 animationFrameId = requestAnimationFrame(animationStep);
-            } else {
-                animationFrameId = null; // Animation finished
             }
         }
         animationFrameId = requestAnimationFrame(animationStep);
     }
     
-    // --- Event Listeners ---
+    // --- Event Listeners (Unchanged) ---
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
             const time = button.dataset.tab;
@@ -126,8 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const node = e.target.closest('.flowchart-node');
         if (node) {
             node.classList.toggle('is-open');
-            // Instead of a jerky setTimeout, start the smooth animation loop.
-            animateLines(400); // Duration must match the CSS transition
+            animateLines(400);
         }
     });
 

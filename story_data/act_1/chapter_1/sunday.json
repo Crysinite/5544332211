@@ -2,59 +2,69 @@
   "date": "Sunday, August 21st",
   "times": {
     "Afternoon": {
-      "nodes": [
+      "layout": [
         {
-          "id": "start",
-          "title": "An Unexpected Task",
-          "content": [
-            { "action": "[SCENE START] AFTERNOON - ALEX'S BEDROOM" },
-            { "action": "Alex gets a call from Mr. Harrison." },
-            { "character": "Mr. Harrison (V.O.)", "dialogue": "Alex, I know it's still summer break, but I need a huge favor. I left some important documents in three different spots around town." },
-            { "character": "Mr. Harrison (V.O.)", "dialogue": "Could you possibly pick them up for me before school starts tomorrow? I'll give you extra credit!" }
+          "nodes": [
+            {
+              "id": "start",
+              "title": "An Unexpected Task",
+              "content": [
+                { "action": "[SCENE START] AFTERNOON - ALEX'S BEDROOM" },
+                { "character": "Mr. Harrison (V.O.)", "dialogue": "Alex, I know it's still summer break, but I need a huge favor..." }
+              ]
+            }
           ]
         },
         {
-          "id": "choice_point",
-          "title": "Where to go first? (Player Choice)",
-          "content": [
-            { "action": "Alex agrees. A list appears on the screen showing three locations. The player can choose the order." }
+          "nodes": [
+            {
+              "id": "choice_point",
+              "title": "Where to go first? (Player Choice)",
+              "content": [
+                { "action": "Alex agrees. A list appears showing three locations. The player can choose the order." }
+              ]
+            }
           ]
         },
         {
-          "id": "cafe1",
-          "title": "Event: The Quiet Mug Cafe",
-          "content": [
-            { "action": "[SCENE START] AFTERNOON - THE QUIET MUG CAFE - INTERIOR" },
-            { "action": "Alex approaches the barista, CHLOE." },
-            { "character": "Alex", "dialogue": "Hi, I'm here to pick something up for Mr. Harrison?" },
-            { "character": "Chloe", "dialogue": "Oh, Mr. H! Yes, he left this folder." },
-            { "action": "She hands over a folder labeled 'Poetry Analysis'. [ITEM GET: Poetry Analysis]" }
+          "nodes": [
+            {
+              "id": "cafe1",
+              "title": "Event: The Quiet Mug Cafe",
+              "content": [
+                { "action": "[SCENE START] AFTERNOON - THE QUIET MUG CAFE" },
+                { "character": "Alex", "dialogue": "Hi, I'm here to pick something up for Mr. Harrison?" },
+                { "character": "Chloe", "dialogue": "Oh, Mr. H! Yes, he left this folder." }
+              ]
+            },
+            {
+              "id": "library1",
+              "title": "Event: Old Town Library",
+              "content": [
+                { "action": "[SCENE START] AFTERNOON - OLD TOWN LIBRARY" },
+                { "action": "Alex finds the designated study carrel and a folder labeled 'Historical Timelines'." }
+              ]
+            },
+            {
+              "id": "park1",
+              "title": "Event: Sunbeam Park",
+              "content": [
+                { "action": "[SCENE START] LATE AFTERNOON - SUNBEAM PARK" },
+                { "action": "Tucked under the bench is a waterproof bag with a USB drive inside." }
+              ]
+            }
           ]
         },
         {
-          "id": "library1",
-          "title": "Event: Old Town Library",
-          "content": [
-            { "action": "[SCENE START] AFTERNOON - OLD TOWN LIBRARY - STUDY AREA" },
-            { "action": "The library is silent. Alex finds the designated study carrel. A heavy textbook is on the desk with a folder sticking out." },
-            { "action": "The label reads 'Historical Timelines'. [ITEM GET: Historical Timelines]" }
-          ]
-        },
-        {
-          "id": "park1",
-          "title": "Event: Sunbeam Park",
-          "content": [
-            { "action": "[SCENE START] LATE AFTERNOON - SUNBEAM PARK - BY THE FOUNTAIN" },
-            { "action": "Alex finds the bench. Tucked underneath is a small, waterproof document bag with a USB drive inside. [ITEM GET: Research USB]" }
-          ]
-        },
-        {
-          "id": "school1",
-          "title": "Resolution: Go to School",
-          "content": [
-            { "action": "[SCENE START] EVENING - WESTWOOD HIGH - CLASSROOM" },
-            { "action": "This scene triggers after the player has collected all three items." },
-            { "action": "Alex enters the empty classroom and leaves the items on Mr. Harrison's desk. The quest is complete." }
+          "nodes": [
+            {
+              "id": "school1",
+              "title": "Resolution: Go to School",
+              "content": [
+                { "action": "[SCENE START] EVENING - WESTWOOD HIGH - CLASSROOM" },
+                { "action": "This scene is available after the player has collected all three items." }
+              ]
+            }
           ]
         }
       ],

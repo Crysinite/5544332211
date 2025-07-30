@@ -26,19 +26,24 @@
                 <h4 class="node-title">{{ node.title }}</h4>
             </div>
             <div class="node-content">
-                <p>{{ node.content }}</p>
+                <!-- NEW: Loop through the content array -->
+                {% for item in node.content %}
+                    {% if item.action %}
+                        <p class="action-text"><em>{{ item.action }}</em></p>
+                    {% elif item.character %}
+                        <p class="dialogue-text"><strong>{{ item.character }}:</strong> {{ item.dialogue }}</p>
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
         {% endfor %}
     </div>
     {% endfor %}
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Pass story data from Flask (Python) to JavaScript
     const storyData = {{ day_data | tojson }};
 </script>
 {% endblock %}

@@ -1,0 +1,49 @@
+{
+  "date": "Monday, August 22nd",
+  "times": {
+    "Morning": {
+      "layout": [
+        {
+          "nodes": [
+            {
+              "id": "m1_school_arrival",
+              "title": "First Day of School",
+              "content": [
+                "SCENE: Westwood High - Hallway",
+                "The school is buzzing with energy. You spot your friend Leo by the lockers."
+              ]
+            }
+          ]
+        },
+        {
+          "nodes": [
+            {
+              "id": "m2_leo_convo",
+              "title": "Conversation with Leo",
+              "content": [
+                "Leo asks about your weekend and the task from Mr. Harrison.",
+                "Player can choose a dialogue option about how it went."
+              ]
+            }
+          ]
+        },
+        {
+          "nodes": [
+            {
+              "id": "m3_jane_sighting",
+              "title": "Jane Sighting",
+              "content": [
+                "As you're talking, you see Jane—the girl from the beach—down the hall. She smiles and waves.",
+                "This is a key moment for establishing the relationship route."
+              ]
+            }
+          ]
+        }
+      ],
+      "connections": [
+        { "from": "m1_school_arrival", "to": "m2_leo_convo" },
+        { "from": "m2_leo_convo", "to": "m3_jane_sighting" }
+      ]
+    }
+  }
+}

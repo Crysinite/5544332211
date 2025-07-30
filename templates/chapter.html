@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="page-header">
+        <a href="{{ url_for('act_page', act_num=act_num) }}" class="breadcrumb">← Back to {{ act_title }}</a>
+        <h1>Chapter {{ chapter_num }}</h1>
+        <p>Each chapter is one week. Select a day to view the flowchart.</p>
+    </div>
+    <div class="card-grid">
+        {% for day in days %}
+        <a href="{{ url_for('day_page', act_num=act_num, chapter_num=chapter_num, day_name=day) }}" class="card">
+            <h3>{{ day.capitalize() }}</h3>
+        </a>
+        {% endfor %}
+    </div>
+{% endblock %}
